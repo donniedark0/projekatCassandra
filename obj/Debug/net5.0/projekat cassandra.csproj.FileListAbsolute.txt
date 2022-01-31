@@ -1,0 +1,35 @@
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\appsettings.Development.json
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\appsettings.json
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\projekat cassandra.exe
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\projekat cassandra.deps.json
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\projekat cassandra.runtimeconfig.json
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\projekat cassandra.runtimeconfig.dev.json
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\projekat cassandra.dll
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\ref\projekat cassandra.dll
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\projekat cassandra.pdb
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\Cassandra.dll
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\K4os.Compression.LZ4.dll
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\Microsoft.OpenApi.dll
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\Newtonsoft.Json.dll
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\System.CodeDom.dll
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\System.Management.dll
+C:\Users\darko\Desktop\projekat cassandra\bin\Debug\net5.0\runtimes\win\lib\netcoreapp2.0\System.Management.dll
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\projekat cassandra.csproj.AssemblyReference.cache
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\projekat cassandra.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\projekat cassandra.AssemblyInfoInputs.cache
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\projekat cassandra.AssemblyInfo.cs
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\projekat cassandra.csproj.CoreCompileInputs.cache
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\projekat cassandra.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\projekat cassandra.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\staticwebassets\projekat cassandra.StaticWebAssets.Manifest.cache
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\staticwebassets\projekat cassandra.StaticWebAssets.xml
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\scopedcss\bundle\projekat cassandra.styles.css
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\projekat cassandra.RazorTargetAssemblyInfo.cache
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\projekat cassandra.csproj.CopyComplete
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\projekat cassandra.dll
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\ref\projekat cassandra.dll
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\projekat cassandra.pdb
+C:\Users\darko\Desktop\projekat cassandra\obj\Debug\net5.0\projekat cassandra.genruntimeconfig.cache
