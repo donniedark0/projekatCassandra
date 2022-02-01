@@ -14,5 +14,6 @@ namespace projekat_cassandra.Models
         public string Password { get; set; }
         public List<string> RatingIDs { get; set; }
         public List<string> CommentIDs { get; set; }
+        public List<string> ReservationIDs { get; set; }
     }
 }

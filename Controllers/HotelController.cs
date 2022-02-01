@@ -25,22 +25,29 @@ namespace projekat_cassandra.Controllers
             _mapper = new Mapper(_session);
         }
 
-        [Route("PostHotel")]
+        [Route("PostHotel/{locationid}")]
         [HttpPost]
-        public async Task<IActionResult> AddHotel([FromBody] Hotel hotel)
+        public async Task<IActionResult> AddHotel(string locationid, [FromBody] Hotel hotel)
         {
             
             await _mapper.InsertAsync<Hotel>(hotel);
+            var location = await _mapper.FirstOrDefaultAsync<Location>("WHERE locationid = ?", locationid);
+            location.HotelIDs.Add(hotel.HotelID);
+            await _mapper.UpdateAsync<Hotel>("SET hotelids = ? WHERE locationid = ?", location.HotelIDs, locationid);
             return StatusCode(204);
         }
 
 
-        [Route("GetHotels")]
+        [Route("GetHotelsByLocation")]
         [HttpGet]
-        public async Task<List<Hotel>> GetHotels()
+        public async Task<List<Hotel>> GetHotels([FromBody] List<string> hotelIDs)
         {
-            var hotelList = await _mapper.FetchAsync<Hotel>();
-            return hotelList.ToList();
+            List<Hotel> hotelList = new List<Hotel>();
+            foreach (string hotelid in hotelIDs)
+            {
+                hotelList.Add(await _mapper.FirstOrDefaultAsync<Hotel>("WHERE hotelid = ?", hotelid));
+            }
+            return hotelList;
         }
 
 
@@ -56,8 +63,8 @@ namespace projekat_cassandra.Controllers
         [HttpPut]
         public async Task<IActionResult> EditHotel([FromBody] Hotel hotel)
         {
-            await _mapper.UpdateAsync<Hotel>("SET name = ?, picture = ?, phone = ?, commentids = ?, ratingids = ?, locationID = ?, transportID = ? WHERE hotelid = ?", 
-                                                hotel.Name, hotel.Picture, hotel.Phone, hotel.CommentIDs, hotel.RatingIDs, hotel.LocationID, hotel.TransportID, hotel.HotelID);
+            await _mapper.UpdateAsync<Hotel>("SET name = ?, picture = ?, phone = ?, commentids = ?, ratingids = ?, transportIDs = ? WHERE hotelid = ?", 
+                                                hotel.Name, hotel.Picture, hotel.Phone, hotel.CommentIDs, hotel.RatingIDs, hotel.TransportIDs, hotel.HotelID);
             return StatusCode(204);
         }
     }
