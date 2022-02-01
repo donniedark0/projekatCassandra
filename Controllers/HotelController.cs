@@ -25,17 +25,17 @@ namespace projekat_cassandra.Controllers
             _mapper = new Mapper(_session);
         }
 
-        [Route("api/PostHotel")]
+        [Route("PostHotel")]
         [HttpPost]
         public async Task<IActionResult> AddHotel([FromBody] Hotel hotel)
         {
             
-            await _mapper.InsertIfNotExistsAsync<Hotel>(hotel);
+            await _mapper.InsertAsync<Hotel>(hotel);
             return StatusCode(204);
         }
 
 
-        [Route("api/GetHotels")]
+        [Route("GetHotels")]
         [HttpGet]
         public async Task<List<Hotel>> GetHotels()
         {
@@ -43,17 +43,22 @@ namespace projekat_cassandra.Controllers
             return hotelList.ToList();
         }
 
-/*
-        [Route("DeleteHotel/{key}")]
+
+        [Route("DeleteHotel/{ID}")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteHotel(string key)
+        public async Task<IActionResult> DeleteHotel(string ID)
         {
+            await _mapper.DeleteAsync<Hotel>("WHERE hotelid = ?", ID);
+            return StatusCode(204);
         }
 
-        [Route("EditHotel/{key}")]
+        [Route("EditHotel")]
         [HttpPut]
-        public async Task<IActionResult> EditHotel(string key)
+        public async Task<IActionResult> EditHotel([FromBody] Hotel hotel)
         {
-        }*/
+            await _mapper.UpdateAsync<Hotel>("SET name = ?, picture = ?, phone = ?, commentids = ?, ratingids = ?, locationID = ?, transportID = ? WHERE hotelid = ?", 
+                                                hotel.Name, hotel.Picture, hotel.Phone, hotel.CommentIDs, hotel.RatingIDs, hotel.LocationID, hotel.TransportID, hotel.HotelID);
+            return StatusCode(204);
+        }
     }
 }

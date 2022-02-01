@@ -11,6 +11,8 @@ namespace projekat_cassandra.Models
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Picture { get; set; }
+        public List<string> CommentIDs { get; set; }
+        public List<string> RatingIDs { get; set; }
         public string LocationID { get; set; }
         public string TransportID { get; set; }
     }

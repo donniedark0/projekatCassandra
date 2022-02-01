@@ -43,6 +43,14 @@ namespace projekat_cassandra.Controllers
             return locationList.ToList();
         }
 
+        [Route("api/GetLocationsBySeason/{season}")]
+        [HttpGet]
+        public async Task<List<Location>> GetLocationsBySeason(string season)
+        {
+            var locationList = await _mapper.FetchAsync<Location>("WHERE season = ?", season);
+            return locationList.ToList();
+        }
+
 
         [Route("DeleteLocation/{ID}")]
         [HttpDelete]
