@@ -25,7 +25,7 @@ namespace projekat_cassandra.Controllers
             _mapper = new Mapper(_session);
         }
 
-        [Route("api/PostTransport")]
+        [Route("PostTransport")]
         [HttpPost]
         public async Task<IActionResult> AddTransport([FromBody] Transport transport)
         {
@@ -35,12 +35,20 @@ namespace projekat_cassandra.Controllers
         }
 
 
-        [Route("api/GetTransports")]
+        [Route("GetTransports")]
         [HttpGet]
         public async Task<List<Transport>> GetTransports()
         {
             var transportList = await _mapper.FetchAsync<Transport>();
             return transportList.ToList();
+        }
+
+        [Route("GetTransportNumber")]
+        [HttpGet]
+        public async Task<int> GetTransportNumber()
+        {
+            var transportList = await _mapper.FetchAsync<Transport>();
+            return transportList.Count();
         }
 
 

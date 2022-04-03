@@ -25,7 +25,7 @@ namespace projekat_cassandra.Controllers
             _mapper = new Mapper(_session);
         }
 
-        [Route("api/PostReservation")]
+        [Route("PostReservation")]
         [HttpPost]
         public async Task<IActionResult> AddReservation([FromBody] Reservation reservation)
         {
@@ -33,24 +33,30 @@ namespace projekat_cassandra.Controllers
             await _mapper.InsertAsync<Reservation>(reservation);
 
             var hotel = await _mapper.FirstOrDefaultAsync<Hotel>("WHERE hotelid = ?", reservation.HotelID);
-            hotel.ReservationIDs.Add(reservation.ReservationID);
-            await _mapper.UpdateAsync<Hotel>("SET reservationids = ? WHERE hotelid = ?", hotel.ReservationIDs, hotel.HotelID);
+            if (hotel.Reservations == null){
+                hotel.Reservations = new List<string>();
+            }
+            hotel.Reservations.Add(reservation.ReservationID);
+            await _mapper.UpdateAsync<Hotel>("SET reservations = ? WHERE hotelid = ?", hotel.Reservations, hotel.HotelID);
  
             var user = await _mapper.FirstOrDefaultAsync<User>("WHERE userid = ?", reservation.UserID);
-            user.ReservationIDs.Add(reservation.ReservationID);
-            await _mapper.UpdateAsync<User>("SET reservationids = ? WHERE userid = ?", user.ReservationIDs, user.UserID);
+            if (user.Reservations == null){
+                user.Reservations = new List<string>();
+            }
+            user.Reservations.Add(reservation.ReservationID);
+            await _mapper.UpdateAsync<User>("SET reservations = ? WHERE userid = ?", user.Reservations, user.UserID);
             
             return StatusCode(204);
         }
 
 
-        [Route("api/GetUsersReservations/{username}")]
+        [Route("GetUsersReservations/{username}")]
         [HttpGet]
         public async Task<List<Reservation>> GetUsersReservations(string username)
         {
             var user = await _mapper.FirstOrDefaultAsync<User>("WHERE username = ?", username);
             List<Reservation> reservationList = new List<Reservation>();
-            foreach (var reservationID in user.ReservationIDs)
+            foreach (var reservationID in user.Reservations)
             {
                 reservationList.Add(await _mapper.FirstOrDefaultAsync<Reservation>("WHERE reservationid = ?", reservationID));
             }
@@ -58,18 +64,26 @@ namespace projekat_cassandra.Controllers
             return reservationList;
         }
 
-        [Route("api/GetHotelsReservations/{hotelid}")]
+        [Route("GetHotelsReservations/{hotelid}")]
         [HttpGet]
         public async Task<List<Reservation>> GetHotelsReservations(string hotelid)
         {
-           var hotel = await _mapper.FirstOrDefaultAsync<Hotel>("WHERE hotelid = ?", hotelid);
+            var hotel = await _mapper.FirstOrDefaultAsync<Hotel>("WHERE hotelid = ?", hotelid);
             List<Reservation> reservationList = new List<Reservation>();
-            foreach (var reservationID in hotel.ReservationIDs)
+            foreach (var reservationID in hotel.Reservations)
             {
                 reservationList.Add(await _mapper.FirstOrDefaultAsync<Reservation>("WHERE reservationid = ?", reservationID));
             }
 
             return reservationList;
+        }
+
+        [Route("GetReservationNumber")]
+        [HttpGet]
+        public async Task<int> GetReservationNumber()
+        {
+            var reservationList = await _mapper.FetchAsync<Reservation>();
+            return reservationList.Count();
         }
 
 
@@ -81,12 +95,30 @@ namespace projekat_cassandra.Controllers
             return StatusCode(204);
         }
 
+        [Route("DeleteHotelsReservations/{hotelid}")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteHotelsReservations(string hotelid)
+        {
+            await _mapper.DeleteAsync<Room>("WHERE hotelid = ?", hotelid);
+
+            var hotel = await _mapper.FirstOrDefaultAsync<Hotel>("WHERE hotelid = ?", hotelid);
+
+            var allReservations = await _mapper.FetchAsync<Reservation>();
+
+            foreach (Reservation reservation in allReservations.Where(res => res.HotelID == hotelid))
+            {
+                await _mapper.DeleteAsync<Reservation>("WHERE reservationid = ?", reservation.ReservationID);
+            }
+
+            return StatusCode(204);
+        }
+
         [Route("EditReservation")]
         [HttpPut]
         public async Task<IActionResult> EditReservation([FromBody] Reservation reservation)
         {
-            await _mapper.UpdateAsync<Reservation>("SET dateffrom = ?, dateto = ? WHERE reservationid = ?", 
-                                                reservation.DateFrom, reservation.DateTo, reservation.ReservationID);
+            await _mapper.UpdateAsync<Reservation>("SET datefrom = ?, dateto = ?, transportid = ? WHERE reservationid = ?", 
+                                                reservation.DateFrom, reservation.DateTo, reservation.TransportID, reservation.ReservationID);
             return StatusCode(204);
         }
     }

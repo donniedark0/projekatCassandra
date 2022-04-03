@@ -11,6 +11,7 @@ namespace projekat_cassandra.Models
         public string HotelID { get; set; }
         public string RoomID { get; set; }
         public string UserID { get; set; }
+        public string TransportID {get; set;}
         public DateTime DateTo { get; set; }
         public DateTime DateFrom { get; set; }
     }

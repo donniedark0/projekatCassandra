@@ -25,17 +25,17 @@ namespace projekat_cassandra.Controllers
             _mapper = new Mapper(_session);
         }
 
-        [Route("api/PostRating")]
+        [Route("PostRating/{userid}/{hotelid}")]
         [HttpPost]
-        public async Task<IActionResult> AddRating([FromBody] Rating rating)
+        public async Task<IActionResult> AddRating(string userid, string hotelid, [FromBody] Rating rating)
         {
             
             await _mapper.InsertAsync<Rating>(rating);
-            var hotel = await _mapper.FirstOrDefaultAsync<Hotel>("WHERE hotelid = ?", rating.HotelID);
+            var hotel = await _mapper.FirstOrDefaultAsync<Hotel>("WHERE hotelid = ?", hotelid);
             hotel.RatingIDs.Add(rating.RatingID);
             await _mapper.UpdateAsync<Hotel>("SET ratingids = ? WHERE hotelid = ?", hotel.RatingIDs, hotel.HotelID);
 
-            var user = await _mapper.FirstOrDefaultAsync<User>("WHERE userid = ?", rating.UserID);
+            var user = await _mapper.FirstOrDefaultAsync<User>("WHERE userid = ?", userid);
             user.RatingIDs.Add(rating.RatingID);
             await _mapper.UpdateAsync<User>("SET ratingids = ? WHERE userid = ?", user.RatingIDs, user.UserID);
 
@@ -43,9 +43,17 @@ namespace projekat_cassandra.Controllers
             return StatusCode(204);
         }
 
-
-        [Route("api/ClaculateHotelRatings/{hotelid}")]
+        [Route("GetRatingNumber")]
         [HttpGet]
+        public async Task<int> GetRatingNumber()
+        {
+            var ratingList = await _mapper.FetchAsync<Rating>();
+            return ratingList.Count();
+        }
+
+
+        [Route("ClaculateHotelRatings/{hotelid}")]
+        [HttpPut]
         public async Task<int> ClaculateRatings(string hotelid)
         {
             var hotel = await _mapper.FirstOrDefaultAsync<Hotel>("WHERE hotelid = ?", hotelid);
@@ -95,7 +103,6 @@ namespace projekat_cassandra.Controllers
             {
                 await _mapper.DeleteAsync<Rating>("WHERE ratingid = ?", ratingID);
             }
-            await _mapper.UpdateAsync<Hotel>("SET ratingids = ? WHERE hotelid = ?", null, hotel.HotelID);
             return StatusCode(204);
         }
 
@@ -103,8 +110,7 @@ namespace projekat_cassandra.Controllers
         [HttpPut]
         public async Task<IActionResult> EditRating([FromBody] Rating rating)
         {
-            await _mapper.UpdateAsync<Rating>("SET mark = ? WHERE userid = ? AND ratingid = ?", 
-                                                rating.Mark, rating.UserID, rating.RatingID);
+            await _mapper.UpdateAsync<Rating>("SET mark = ? WHERE ratingid = ?", rating.Mark, rating.RatingID);
             return StatusCode(204);
         }
     }

@@ -25,33 +25,34 @@ namespace projekat_cassandra.Controllers
             _mapper = new Mapper(_session);
         }
 
-        [Route("api/PostComment")]
+        [Route("PostComment/{userid}/{hotelid}")]
         [HttpPost]
-        public async Task<IActionResult> AddComment([FromBody] Comment comment)
+        public async Task<IActionResult> AddComment(string userid, string hotelid, [FromBody] Comment comment)
         {
             
             await _mapper.InsertAsync<Comment>(comment);
-            var hotel = await _mapper.FirstOrDefaultAsync<Hotel>("WHERE hotelid = ?", comment.HotelID);
+            var hotel = await _mapper.FirstOrDefaultAsync<Hotel>("WHERE hotelid = ?", hotelid);
             hotel.CommentIDs.Add(comment.CommentID);
             await _mapper.UpdateAsync<Hotel>("SET commentids = ? WHERE hotelid = ?", hotel.CommentIDs, hotel.HotelID);
  
-            var user = await _mapper.FirstOrDefaultAsync<User>("WHERE userid = ?", comment.UserID);
+            var user = await _mapper.FirstOrDefaultAsync<User>("WHERE userid = ?", userid);
             user.CommentIDs.Add(comment.CommentID);
             await _mapper.UpdateAsync<User>("SET commentids = ? WHERE userid = ?", user.CommentIDs, user.UserID);
             return StatusCode(204);
         }
 
 
-        [Route("api/GetComments")]
+        [Route("GetCommentNumber")]
         [HttpGet]
-        public async Task<List<Comment>> GetComments()
+        public async Task<int> GetCommentNumber()
         {
             var commentList = await _mapper.FetchAsync<Comment>();
-            return commentList.ToList();
+            return commentList.Count();
         }
 
-        [Route("api/GetHotelsComments/{hotelid}")]
-        [HttpGet]
+
+        [Route("GetHotelsComments/{hotelid}")]
+        [HttpPut]
         public async Task<List<Comment>> GetHotelsComments(string hotelid)
         {
             var hotel = await _mapper.FirstOrDefaultAsync<Hotel>("WHERE hotelid = ?", hotelid);
@@ -64,11 +65,21 @@ namespace projekat_cassandra.Controllers
             return commentList;
         }
 
-        [Route("DeleteComment/{commentid}")]
+        [Route("DeleteComment/{commentid}/{userid}/{hotelid}")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteComment(string commentid)
+        public async Task<IActionResult> DeleteComment(string commentid, string userid, string hotelid)
         {
             await _mapper.DeleteAsync<Comment>("WHERE commentid = ?", commentid);
+
+            var hotel = await _mapper.FirstOrDefaultAsync<Hotel>("WHERE hotelid = ?", hotelid);
+            hotel.CommentIDs.Remove(commentid);
+            await _mapper.UpdateAsync<Hotel>("SET commentids = ? WHERE hotelid = ?", hotel.CommentIDs, hotelid);
+
+            var user = await _mapper.FirstOrDefaultAsync<User>("WHERE userid = ?", userid);
+            user.CommentIDs.Remove(commentid);
+            await _mapper.UpdateAsync<User>("SET commentids = ? WHERE userid = ?", user.CommentIDs, userid);
+
+
             return StatusCode(204);
         }
 
@@ -103,8 +114,7 @@ namespace projekat_cassandra.Controllers
         [HttpPut]
         public async Task<IActionResult> EditComment([FromBody] Comment comment)
         {
-            await _mapper.UpdateAsync<Comment>("SET content = ? WHERE userid = ? AND commentid = ?", 
-                                                comment.Content, comment.UserID, comment.CommentID);
+            await _mapper.UpdateAsync<Comment>("SET content = ? WHERE commentid = ?", comment.Content, comment.CommentID);
             return StatusCode(204);
         }
     }

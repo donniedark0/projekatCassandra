@@ -8,8 +8,7 @@ namespace projekat_cassandra.Models
     public class Comment
     {
         public string CommentID { get; set; }
-        public string UserID { get; set; }
-        public string HotelID { get; set; }
         public string Content { get; set; }
+        public string UserID { get; set; }
     }
 }

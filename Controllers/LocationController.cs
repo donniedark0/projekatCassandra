@@ -25,17 +25,20 @@ namespace projekat_cassandra.Controllers
             _mapper = new Mapper(_session);
         }
 
-        [Route("api/PostLocation")]
+        [Route("PostLocation/{seasonid}")]
         [HttpPost]
-        public async Task<IActionResult> AddLocation([FromBody] Location location)
+        public async Task<IActionResult> AddLocation(string seasonid, [FromBody] Location location)
         {
             
             await _mapper.InsertAsync<Location>(location);
+            var season = await _mapper.FirstOrDefaultAsync<Season>("WHERE seasonid = ?", seasonid);
+            season.LocationIDs.Add(location.LocationID);
+            await _mapper.UpdateAsync<Season>("SET locationids = ? WHERE seasonid = ?", season.LocationIDs, seasonid);
             return StatusCode(204);
         }
 
 
-        [Route("api/GetLocations")]
+        [Route("GetLocations")]
         [HttpGet]
         public async Task<List<Location>> GetLocations()
         {
@@ -43,20 +46,47 @@ namespace projekat_cassandra.Controllers
             return locationList.ToList();
         }
 
-        [Route("api/GetLocationsBySeason/{season}")]
+        [Route("GetLocationNumber")]
+        [HttpGet]
+        public async Task<int> GetLocationNumber()
+        {
+            var locationList = await _mapper.FetchAsync<Location>();
+            return locationList.Count();
+        }
+
+        [Route("GetLocationsByIDs")]
+        [HttpPut]
+        public async Task<List<Location>> GetLocationsByIDs([FromBody] List<string> ids)
+        {
+            List<Location> locationList = new List<Location>();
+            foreach (string locationid in ids)
+            {
+                locationList.Add(await _mapper.FirstOrDefaultAsync<Location>("WHERE locationid = ?", locationid));
+            }
+            return locationList;
+        }
+
+        /*[Route("api/GetLocationsBySeason/{season}")]
         [HttpGet]
         public async Task<List<Location>> GetLocationsBySeason(string season)
         {
             var locationList = await _mapper.FetchAsync<Location>("WHERE season = ?", season);
             return locationList.ToList();
-        }
+        }*/
 
 
-        [Route("DeleteLocation/{ID}")]
+        [Route("DeleteLocation/{seasonID}/{locationID}")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteLocation(string ID)
+        public async Task<IActionResult> DeleteLocation(string seasonID, string locationID)
         {
-            await _mapper.DeleteAsync<Location>("WHERE locationid = ?", ID);
+            await _mapper.DeleteAsync<Location>("WHERE locationid = ?", locationID);
+
+            var season = await _mapper.FirstOrDefaultAsync<Season>("WHERE seasonid = ?", seasonID);
+
+            season.LocationIDs.Remove(locationID);
+
+            await _mapper.UpdateAsync<Season>("SET locationids = ? WHERE seasonid = ?", season.LocationIDs, seasonID);
+
             return StatusCode(204);
         }
 
@@ -64,8 +94,8 @@ namespace projekat_cassandra.Controllers
         [HttpPut]
         public async Task<IActionResult> EditLocation([FromBody] Location location)
         {
-            await _mapper.UpdateAsync<Location>("SET season = ?, city = ?, state = ? WHERE locationid = ?", 
-                                                location.Season, location.City, location.State, location.LocationID);
+            await _mapper.UpdateAsync<Location>("SET city = ?, state = ? WHERE locationid = ?", 
+                                                location.City, location.State, location.LocationID);
             return StatusCode(204);
         }
     }

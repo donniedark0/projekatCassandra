@@ -13,7 +13,6 @@ namespace projekat_cassandra.Models
         public string Picture { get; set; }
         public List<string> CommentIDs { get; set; }
         public List<string> RatingIDs { get; set; }
-        public List<string> ReservationIDs { get; set; }
-        public List<string> TransportIDs { get; set; }
+        public List<string> Reservations { get; set; }
     }
 }

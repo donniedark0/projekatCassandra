@@ -25,7 +25,7 @@ namespace projekat_cassandra.Controllers
             _mapper = new Mapper(_session);
         }
 
-        [Route("api/PostUser")]
+        [Route("PostUser")]
         [HttpPost]
         public async Task<IActionResult> AddUser([FromBody] User user)
         {
@@ -35,12 +35,29 @@ namespace projekat_cassandra.Controllers
         }
 
 
-        [Route("api/GetUsers")]
+        [Route("GetUser/{username}/{password}")]
         [HttpGet]
-        public async Task<List<User>> GetUsers()
+        public async Task<ActionResult<User>> GetUsers(string username, string password)
         {
             var userList = await _mapper.FetchAsync<User>();
-            return userList.ToList();
+            var userForSending = new User();
+
+            foreach (User user in userList.Where(u => u.Username == username && u.Password == password))
+            {
+                userForSending = user;   
+            }
+            if(userForSending.UserID == null)
+                return StatusCode(404);
+            else
+                return userForSending;
+        }
+
+        [Route("GetUserNumber")]
+        [HttpGet]
+        public async Task<int> GetUserNumber()
+        {
+            var userList = await _mapper.FetchAsync<User>();
+            return userList.Count();
         }
 
 
@@ -56,8 +73,8 @@ namespace projekat_cassandra.Controllers
         [HttpPut]
         public async Task<IActionResult> EditUser([FromBody] User user)
         {
-            await _mapper.UpdateAsync<User>("SET name = ?, surname = ?, phone = ?, password = ? WHERE userid = ?", 
-                                                user.Name, user.Surname, user.Phone, user.Password, user.UserID);
+            await _mapper.UpdateAsync<User>("SET username = ?, phone = ?, password = ?, ratingids = ? WHERE userid = ?", 
+                                                user.Username, user.Phone, user.Password, user.RatingIDs, user.UserID);
             return StatusCode(204);
         }
     }
