@@ -63,8 +63,8 @@ namespace projekat_cassandra.Controllers
         [HttpPut]
         public async Task<IActionResult> EditSeason([FromBody] Season season)
         {
-            await _mapper.UpdateAsync<Season>("SET name = ?, locationids = ? WHERE seasonid = ?", 
-                                                season.Name, season.LocationIDs, season.SeasonID);
+            await _mapper.UpdateAsync<Season>("SET name = ? WHERE seasonid = ?", 
+                                                season.Name, season.SeasonID);
             return StatusCode(204);
         }
     }

@@ -73,8 +73,8 @@ namespace projekat_cassandra.Controllers
         [HttpPut]
         public async Task<IActionResult> EditUser([FromBody] User user)
         {
-            await _mapper.UpdateAsync<User>("SET username = ?, phone = ?, password = ?, ratingids = ? WHERE userid = ?", 
-                                                user.Username, user.Phone, user.Password, user.RatingIDs, user.UserID);
+            await _mapper.UpdateAsync<User>("SET username = ?, phone = ?, password = ? WHERE userid = ?", 
+                                                user.Username, user.Phone, user.Password, user.UserID);
             return StatusCode(204);
         }
     }

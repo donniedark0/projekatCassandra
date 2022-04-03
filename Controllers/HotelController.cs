@@ -84,8 +84,8 @@ namespace projekat_cassandra.Controllers
         [HttpPut]
         public async Task<IActionResult> EditHotel([FromBody] Hotel hotel)
         {
-            await _mapper.UpdateAsync<Hotel>("SET name = ?, picture = ?, reservations = ? WHERE hotelid = ?", 
-                                                hotel.Name, hotel.Picture, hotel.Reservations, hotel.HotelID);
+            await _mapper.UpdateAsync<Hotel>("SET name = ?, picture = ? WHERE hotelid = ?", 
+                                                hotel.Name, hotel.Picture, hotel.HotelID);
             return StatusCode(204);
         }
     }
